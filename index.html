@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Éditeur de contrat de vente</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f5f7;color:#1a1a2e;min-height:100vh;padding:20px}
+:root{--color-background-primary:#fff;--color-background-secondary:#f4f5f7;--color-border-tertiary:#e5e7eb;--color-border-secondary:#d1d5db;--color-text-primary:#1a1a2e;--color-text-secondary:#6b7280;--border-radius-lg:10px;--border-radius-md:6px;--font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+h1.page-title{font-size:18px;font-weight:600;color:#1B2A4A;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.ew{display:flex;gap:16px;padding:0}
+.sb{width:220px;flex-shrink:0;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);background:var(--color-background-primary);height:fit-content;position:sticky;top:20px}
+.sbh{padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.06em;text-transform:uppercase}
+.ni{padding:9px 14px;font-size:13px;color:var(--color-text-secondary);cursor:pointer;border-left:2px solid transparent;display:flex;align-items:center;gap:8px;transition:all .15s}
+.ni:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.ni.active{border-left-color:#1B2A4A;color:var(--color-text-primary);font-weight:500;background:var(--color-background-secondary)}
+.mn{flex:1;min-width:0}
+.sb-block{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:18px 20px;margin-bottom:12px}
+.st{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:12px;padding-bottom:9px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:7px}
+.st i{font-size:15px;color:#C9A84C}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.fr.full{grid-template-columns:1fr}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fl{font-size:11px;color:var(--color-text-secondary);font-weight:500}
+.fg input,.fg textarea,.fg select{font-size:13px;padding:7px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-primary);font-family:var(--font-sans);width:100%}
+.fg input:focus,.fg textarea:focus{outline:none;border-color:#1B2A4A;background:var(--color-background-primary)}
+.fg textarea{resize:vertical;min-height:65px}
+.acts{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.pb{display:flex;align-items:center;gap:7px;background:#1B2A4A;color:#fff;border:none;border-radius:var(--border-radius-md);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font-sans)}
+.pb:hover{opacity:.88}
+.gb{display:flex;align-items:center;gap:7px;background:#C9A84C;color:#fff;border:none;border-radius:var(--border-radius-md);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font-sans)}
+.gb:hover{opacity:.88}
+.rb{display:flex;align-items:center;gap:7px;background:#0F6E56;color:#fff;border:none;border-radius:var(--border-radius-md);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font-sans)}
+.rb:hover{opacity:.88}
+.sig-area{border:1.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);cursor:crosshair;display:block;touch-action:none;background:var(--color-background-primary);width:100%;height:160px}
+.sig-wrap{position:relative}
+.sig-clear{position:absolute;top:6px;right:6px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:3px 9px;font-size:11px;cursor:pointer;color:var(--color-text-secondary);font-family:var(--font-sans)}
+.sig-clear:hover{color:var(--color-text-primary)}
+.sig-status{font-size:11px;color:var(--color-text-secondary);margin-top:5px;display:flex;align-items:center;gap:5px}
+.sig-ok{color:#0F6E56}
+.sig-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:20px;z-index:100;overflow-y:auto}
+.mo.open{display:flex}
+.mm{background:var(--color-background-primary);border-radius:var(--border-radius-lg);width:min(660px,96%);padding:24px 28px;position:relative;margin:auto}
+.cbtn{position:absolute;top:12px;right:14px;background:none;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:4px 10px;cursor:pointer;font-size:12px;color:var(--color-text-secondary);font-family:var(--font-sans)}
+.cbtn:hover{background:var(--color-background-secondary)}
+.ct{font-family:Georgia,serif;font-size:12px;line-height:1.75;color:#222}
+.ch{background:#1B2A4A;padding:18px 22px;border-radius:7px 7px 0 0;text-align:center}
+.ch h1{color:#fff;font-size:17px;letter-spacing:.05em;margin-bottom:2px}
+.ch p{color:#C9A84C;font-size:10px;letter-spacing:.09em}
+.gr{height:2px;background:#C9A84C;margin:0 0 14px}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.pb2{background:#f5f5f0;border:0.5px solid #ccc;border-radius:5px;padding:10px 12px;font-size:11px}
+.pb2 strong{display:block;color:#1B2A4A;font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.at{font-size:10px;font-weight:bold;color:#1B2A4A;letter-spacing:.07em;text-transform:uppercase;margin:16px 0 4px;border-bottom:1px solid #C9A84C;padding-bottom:3px}
+.ab{font-size:11px;line-height:1.7;color:#333;margin:5px 0}
+.fd{color:#999;font-style:italic}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.sb2{text-align:center}
+.sb2 p{font-size:10px;font-weight:bold;color:#1B2A4A;margin-bottom:3px}
+.sl{border-bottom:1px solid #999;height:36px;margin:6px 0 3px}
+.sl img{max-height:34px;max-width:100%}
+.cf{font-size:9.5px;color:#888;text-align:center;margin-top:16px;border-top:0.5px solid #ddd;padding-top:8px;font-style:italic}
+.bi{padding-left:14px;position:relative;margin:3px 0;font-size:11px}
+.bi::before{content:"•";position:absolute;left:0;color:#C9A84C}
+
+/* Lien acheteur */
+.link-box{background:#f0f7f4;border:1px solid #0F6E56;border-radius:var(--border-radius-md);padding:14px 16px;margin-top:14px}
+.link-box p{font-size:12px;color:#0F6E56;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.link-row{display:flex;gap:8px;align-items:center}
+.link-row input{font-size:12px;padding:6px 10px;border:0.5px solid #0F6E56;border-radius:var(--border-radius-md);background:#fff;color:#1a1a2e;font-family:monospace;flex:1}
+.copy-btn{background:#0F6E56;color:#fff;border:none;border-radius:var(--border-radius-md);padding:6px 12px;font-size:12px;cursor:pointer;font-family:var(--font-sans);white-space:nowrap}
+.copy-btn:hover{opacity:.85}
+.info-box{background:#fff8e6;border:1px solid #C9A84C;border-radius:var(--border-radius-md);padding:12px 14px;margin-top:10px;font-size:12px;color:#8a6a00;line-height:1.6}
+.sig-imported{background:#f0f7f4;border:1px solid #0F6E56;border-radius:var(--border-radius-md);padding:10px 14px;margin-top:10px;font-size:12px;color:#0F6E56;display:none;align-items:center;gap:8px}
+.sig-imported img{max-height:40px;border:0.5px solid #ccc;border-radius:4px;background:#fff;padding:2px}
+.tag-new{background:#0F6E56;color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;margin-left:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+
+<h1 class="page-title"><i class="ti ti-file-text"></i> Éditeur de contrat de vente</h1>
+
+<div class="ew">
+  <nav class="sb">
+    <div class="sbh">Sections</div>
+    <div class="ni active" onclick="show('parties',this)"><i class="ti ti-users"></i> Parties</div>
+    <div class="ni" onclick="show('bien',this)"><i class="ti ti-home"></i> Bien</div>
+    <div class="ni" onclick="show('prix',this)"><i class="ti ti-currency-euro"></i> Prix & paiement</div>
+    <div class="ni" onclick="show('dates',this)"><i class="ti ti-calendar"></i> Dates</div>
+    <div class="ni" onclick="show('juridique',this)"><i class="ti ti-gavel"></i> Juridique</div>
+    <div class="ni" onclick="show('signatures',this)"><i class="ti ti-signature"></i> Signatures</div>
+    <div class="ni" onclick="show('acheteur',this)"><i class="ti ti-send"></i> Lien acheteur <span class="tag-new">NEW</span></div>
+  </nav>
+
+  <div class="mn">
+
+    <!-- PARTIES -->
+    <div id="sec-parties" class="sb-block">
+      <div class="st"><i class="ti ti-users"></i> Vendeur</div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Nom et prénom</label><input id="v_nom" value="Théo Bernard"></div>
+        <div class="fg"><label class="fl">Date et lieu de naissance</label><input id="v_naiss" value="12/07/1999, Paris"></div>
+      </div>
+      <div class="fr full"><div class="fg"><label class="fl">Adresse</label><input id="v_addr" value="9061 Lakeview Court"></div></div>
+      <div class="st" style="margin-top:14px"><i class="ti ti-user"></i> Acheteur</div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Nom et prénom</label><input id="a_nom" placeholder="ex: Jean Dupont"></div>
+        <div class="fg"><label class="fl">Date et lieu de naissance</label><input id="a_naiss" placeholder="ex: 05/03/1990, Lyon"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Adresse</label><input id="a_addr" placeholder="ex: 12 rue de la Paix, Paris"></div>
+        <div class="fg"><label class="fl">Pièce d'identité</label><input id="a_pi" placeholder="ex: CNI n°123456789"></div>
+      </div>
+    </div>
+
+    <!-- BIEN -->
+    <div id="sec-bien" class="sb-block" style="display:none">
+      <div class="st"><i class="ti ti-home"></i> Description du bien</div>
+      <div class="fr full"><div class="fg"><label class="fl">Adresse du bien</label><input id="b_addr" placeholder="ex: 12 rue de la Paix, Paris"></div></div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Superficie terrain (m²)</label><input id="b_terrain" placeholder="ex: 350"></div>
+        <div class="fg"><label class="fl">Superficie habitable (m²)</label><input id="b_hab" placeholder="ex: 120"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Nb de chambres</label><input id="b_chambres" placeholder="ex: 3"></div>
+        <div class="fg"></div>
+      </div>
+      <div class="fr full"><div class="fg"><label class="fl">Composition (une pièce par ligne)</label><textarea id="b_pieces" placeholder="ex: Salle de bain&#10;Cuisine&#10;Salon..."></textarea></div></div>
+    </div>
+
+    <!-- PRIX -->
+    <div id="sec-prix" class="sb-block" style="display:none">
+      <div class="st"><i class="ti ti-currency-euro"></i> Prix de vente</div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Montant (chiffres)</label><input id="p_montant" placeholder="ex: 285 000 €"></div>
+        <div class="fg"><label class="fl">En toutes lettres</label><input id="p_lettres" placeholder="ex: deux cent quatre-vingt-cinq mille euros"></div>
+      </div>
+    </div>
+
+    <!-- DATES -->
+    <div id="sec-dates" class="sb-block" style="display:none">
+      <div class="st"><i class="ti ti-calendar"></i> Dates importantes</div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Date de signature</label><input id="d_signature" type="date"></div>
+        <div class="fg"><label class="fl">Lieu de signature</label><input id="d_lieu" placeholder="ex: Paris"></div>
+      </div>
+      <div class="fr full">
+        <div class="fg"><label class="fl">Date de transfert de propriété</label><input id="d_transfert" type="date"></div>
+      </div>
+    </div>
+
+    <!-- JURIDIQUE -->
+    <div id="sec-juridique" class="sb-block" style="display:none">
+      <div class="st"><i class="ti ti-gavel"></i> Informations juridiques</div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Juridiction compétente</label><input id="j_ville" placeholder="ex: Tribunal judiciaire de Paris"></div>
+        <div class="fg"><label class="fl">Frais notariaux à la charge de</label>
+          <select id="j_frais"><option value="l'Acheteur">L'Acheteur</option><option value="le Vendeur">Le Vendeur</option><option value="les deux parties">Les deux parties</option></select>
+        </div>
+      </div>
+      <div class="fr full"><div class="fg"><label class="fl">Clauses particulières (optionnel)</label><textarea id="j_clauses" placeholder="ex: mobilier inclus dans la vente..."></textarea></div></div>
+    </div>
+
+    <!-- SIGNATURES -->
+    <div id="sec-signatures" class="sb-block" style="display:none">
+      <div class="st"><i class="ti ti-signature"></i> Signatures manuscrites</div>
+      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:16px">Dessinez votre signature dans chaque zone avec la souris ou le doigt.</p>
+      <div class="sig-grid-2">
+        <div>
+          <div class="fg" style="margin-bottom:8px"><label class="fl">Signature du Vendeur — <span id="v_nom_label">Théo Bernard</span></label></div>
+          <div class="sig-wrap">
+            <canvas id="canvasV" class="sig-area" width="280" height="160"></canvas>
+            <button class="sig-clear" onclick="clearSig('V')"><i class="ti ti-trash"></i> Effacer</button>
+          </div>
+          <div class="sig-status" id="statusV"><i class="ti ti-circle-dotted"></i> En attente</div>
+        </div>
+        <div>
+          <div class="fg" style="margin-bottom:8px"><label class="fl">Signature de l'Acheteur — <span id="a_nom_label">Acheteur</span></label></div>
+          <div class="sig-wrap">
+            <canvas id="canvasA" class="sig-area" width="280" height="160"></canvas>
+            <button class="sig-clear" onclick="clearSig('A')"><i class="ti ti-trash"></i> Effacer</button>
+          </div>
+          <div class="sig-status" id="statusA"><i class="ti ti-circle-dotted"></i> En attente</div>
+          <!-- Signature importée depuis acheteur distant -->
+          <div class="sig-imported" id="sigImportedBox">
+            <i class="ti ti-circle-check" style="color:#0F6E56;font-size:18px"></i>
+            <div>
+              <strong style="display:block;margin-bottom:4px">Signature reçue de l'acheteur :</strong>
+              <img id="sigImportedPreview" src="" alt="Signature acheteur">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding:12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)">
+        <div class="fg" style="margin-bottom:10px">
+          <label class="fl">Couleur de la signature</label>
+          <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+            <button onclick="setColor('#1B2A4A','navy')" id="col-navy" style="width:28px;height:28px;border-radius:50%;background:#1B2A4A;border:2px solid #1B2A4A;cursor:pointer"></button>
+            <button onclick="setColor('#111','black')" id="col-black" style="width:28px;height:28px;border-radius:50%;background:#111;border:2px solid transparent;cursor:pointer"></button>
+            <button onclick="setColor('#1a3a1a','green')" id="col-green" style="width:28px;height:28px;border-radius:50%;background:#1a3a1a;border:2px solid transparent;cursor:pointer"></button>
+            <button onclick="setColor('#8B0000','red')" id="col-red" style="width:28px;height:28px;border-radius:50%;background:#8B0000;border:2px solid transparent;cursor:pointer"></button>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="fl">Épaisseur du trait</label>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+            <input type="range" id="penSize" min="1" max="6" value="2" step="1" style="flex:1">
+            <span id="penSizeLabel" style="font-size:12px;color:var(--color-text-secondary);min-width:20px">2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIEN ACHETEUR -->
+    <div id="sec-acheteur" class="sb-block" style="display:none">
+      <div class="st"><i class="ti ti-send"></i> Signature à distance — Acheteur</div>
+      <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:16px">
+        Générez un lien unique à envoyer à l'acheteur. Il pourra lire le contrat et signer depuis son appareil. Sa signature sera automatiquement récupérable ici.
+      </p>
+
+      <div class="info-box">
+        <strong style="display:block;margin-bottom:4px">⚠️ Avant de générer le lien :</strong>
+        Assurez-vous d'avoir rempli les informations du contrat (parties, bien, prix, dates). L'acheteur verra le contrat tel qu'il est au moment de la génération du lien.
+      </div>
+
+      <div class="acts" style="margin-top:16px">
+        <button class="pb" onclick="generateLink()"><i class="ti ti-link"></i> Générer le lien acheteur</button>
+        <button class="rb" onclick="fetchBuyerSignature()"><i class="ti ti-download"></i> Récupérer la signature</button>
+      </div>
+
+      <div class="link-box" id="linkBox" style="display:none">
+        <p><i class="ti ti-circle-check"></i> Lien généré — à envoyer à l'acheteur</p>
+        <div class="link-row">
+          <input type="text" id="generatedLink" readonly>
+          <button class="copy-btn" onclick="copyLink()"><i class="ti ti-copy"></i> Copier</button>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:#555">
+          <strong>ID du contrat :</strong> <span id="contractId" style="font-family:monospace;color:#1B2A4A"></span><br>
+          <span style="color:#888">Conservez cet ID pour récupérer la signature de l'acheteur.</span>
+        </div>
+      </div>
+
+      <div id="fetchResult" style="margin-top:12px;font-size:13px;display:none"></div>
+    </div>
+
+    <div class="acts">
+      <button class="pb" onclick="openPreview()"><i class="ti ti-eye"></i> Aperçu</button>
+      <button class="gb" onclick="downloadImg()"><i class="ti ti-download"></i> Télécharger (.png)</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL APERÇU -->
+<div class="mo" id="mo">
+  <div class="mm">
+    <button class="cbtn" onclick="closePreview()"><i class="ti ti-x"></i> Fermer</button>
+    <div class="ct" id="preview"></div>
+  </div>
+</div>
+
+<script>
+// ---- CONFIG ----
+// 👇 Colle ici ta clé JSONBin (X-Master-Key) — compte gratuit sur jsonbin.io
+const JSONBIN_KEY = '$2a$10$VOGBisKbv7jbMhLHxT.a7u0xGA6EZwCHXes95kDkoartz.jhuCtMW';
+const JSONBIN_API = 'https://api.jsonbin.io/v3';
+
+var drawColor = '#1B2A4A';
+var penSize = 2;
+var sigData = {V: null, A: null};
+var drawing = {V: false, A: false};
+var currentContractId = null;
+
+// ---- CANVAS ----
+function initCanvas(id) {
+  var canvas = document.getElementById('canvas' + id);
+  var ctx = canvas.getContext('2d');
+  ctx.strokeStyle = drawColor; ctx.lineWidth = penSize; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  function getPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+    if (e.touches) return {x:(e.touches[0].clientX-rect.left)*scaleX,y:(e.touches[0].clientY-rect.top)*scaleY};
+    return {x:(e.clientX-rect.left)*scaleX,y:(e.clientY-rect.top)*scaleY};
+  }
+  function start(e){e.preventDefault();drawing[id]=true;ctx.strokeStyle=drawColor;ctx.lineWidth=penSize;var p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);}
+  function move(e){e.preventDefault();if(!drawing[id])return;var p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);}
+  function end(e){e.preventDefault();if(!drawing[id])return;drawing[id]=false;sigData[id]=canvas.toDataURL('image/png');document.getElementById('status'+id).innerHTML='<i class="ti ti-circle-check" style="color:#0F6E56"></i> <span class="sig-ok">Signature enregistrée</span>';}
+  canvas.addEventListener('mousedown',start);canvas.addEventListener('mousemove',move);canvas.addEventListener('mouseup',end);canvas.addEventListener('mouseleave',end);
+  canvas.addEventListener('touchstart',start,{passive:false});canvas.addEventListener('touchmove',move,{passive:false});canvas.addEventListener('touchend',end,{passive:false});
+}
+
+function clearSig(id) {
+  var canvas = document.getElementById('canvas'+id);
+  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  sigData[id]=null;
+  document.getElementById('status'+id).innerHTML='<i class="ti ti-circle-dotted"></i> En attente';
+  if(id==='A'){document.getElementById('sigImportedBox').style.display='none';}
+}
+
+function setColor(c,name){
+  drawColor=c;
+  document.querySelectorAll('[id^="col-"]').forEach(function(b){b.style.border='2px solid transparent';});
+  document.getElementById('col-'+name).style.border='2px solid '+c;
+}
+
+document.getElementById('penSize').addEventListener('input',function(){penSize=parseInt(this.value);document.getElementById('penSizeLabel').textContent=this.value;});
+document.getElementById('v_nom').addEventListener('input',function(){document.getElementById('v_nom_label').textContent=this.value||'Vendeur';});
+document.getElementById('a_nom').addEventListener('input',function(){document.getElementById('a_nom_label').textContent=this.value||'Acheteur';});
+
+function show(name,el){
+  document.querySelectorAll('.sb-block').forEach(function(e){e.style.display='none';});
+  document.querySelectorAll('.ni').forEach(function(e){e.classList.remove('active');});
+  document.getElementById('sec-'+name).style.display='block';
+  el.classList.add('active');
+}
+
+function v(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+function fmtDate(d){if(!d)return null;var p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function dot(val,n){return val?'<strong>'+esc(val)+'</strong>':'<span class="fd">'+'.'.repeat(n||30)+'</span>';}
+
+// ---- COLLECTE DES DONNÉES DU CONTRAT ----
+function collectContractData() {
+  return {
+    v_nom: v('v_nom'), v_naiss: v('v_naiss'), v_addr: v('v_addr'),
+    a_nom: v('a_nom'), a_naiss: v('a_naiss'), a_addr: v('a_addr'), a_pi: v('a_pi'),
+    b_addr: v('b_addr'), b_terrain: v('b_terrain'), b_hab: v('b_hab'),
+    b_chambres: v('b_chambres'), b_pieces: v('b_pieces'),
+    p_montant: v('p_montant'), p_lettres: v('p_lettres'),
+    d_signature: v('d_signature'), d_lieu: v('d_lieu'), d_transfert: v('d_transfert'),
+    j_ville: v('j_ville'), j_frais: v('j_frais'), j_clauses: v('j_clauses')
+  };
+}
+
+// ---- GÉNÉRATION DU LIEN ----
+async function generateLink() {
+  if (!JSONBIN_KEY || JSONBIN_KEY === 'COLLE_TA_CLÉ_ICI') {
+    alert('⚠️ Tu dois d\'abord coller ta clé JSONBin dans le fichier index.html\n\n1. Va sur jsonbin.io → crée un compte gratuit\n2. Rubrique "API Keys" → copie ta Master Key\n3. Dans index.html, remplace COLLE_TA_CLÉ_ICI par ta clé');
+    return;
+  }
+  var btn = event.target.closest('button');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Création...';
+
+  var contractData = collectContractData();
+
+  try {
+    // Création d'un bin JSONBin public
+    var res = await fetch('https://api.jsonbin.io/v3/b', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': JSONBIN_KEY,
+        'X-Bin-Private': 'false',
+        'X-Bin-Name': 'contrat-' + Date.now()
+      },
+      body: JSON.stringify({
+        contract: contractData,
+        signature_acheteur: null,
+        signed_at: null,
+        status: 'en_attente'
+      })
+    });
+
+    var data = await res.json();
+    if (!data.metadata || !data.metadata.id) throw new Error('Erreur JSONBin');
+
+    currentContractId = data.metadata.id;
+    localStorage.setItem('lastContractId', currentContractId);
+
+    // Construire le lien vers signer.html
+    var baseUrl = window.location.href.replace('index.html','').replace(/\/$/, '');
+    var signerUrl = baseUrl + '/signer.html?id=' + currentContractId;
+
+    document.getElementById('generatedLink').value = signerUrl;
+    document.getElementById('contractId').textContent = currentContractId;
+    document.getElementById('linkBox').style.display = 'block';
+
+  } catch(e) {
+    alert('Erreur lors de la création du lien : ' + e.message + '\n\nVérifiez votre connexion internet.');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-link"></i> Générer le lien acheteur';
+}
+
+function copyLink() {
+  var input = document.getElementById('generatedLink');
+  input.select();
+  document.execCommand('copy');
+  var btn = event.target.closest('button');
+  btn.innerHTML = '<i class="ti ti-check"></i> Copié !';
+  setTimeout(function(){btn.innerHTML='<i class="ti ti-copy"></i> Copier';}, 2000);
+}
+
+// ---- RÉCUPÉRATION DE LA SIGNATURE ----
+async function fetchBuyerSignature() {
+  var idToFetch = currentContractId || localStorage.getItem('lastContractId');
+
+  if (!idToFetch) {
+    var manual = prompt('Entrez l\'ID du contrat (visible lors de la génération du lien) :');
+    if (!manual) return;
+    idToFetch = manual.trim();
+  }
+
+  var btn = event.target.closest('button');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Vérification...';
+
+  var resultDiv = document.getElementById('fetchResult');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '<span style="color:#888">Recherche de la signature...</span>';
+
+  try {
+    var res = await fetch('https://api.jsonbin.io/v3/b/' + idToFetch + '/latest', {
+      headers: { 'X-Master-Key': JSONBIN_KEY }
+    });
+    var data = await res.json();
+    var record = data.record;
+
+    if (record.status === 'signe' && record.signature_acheteur) {
+      // Afficher la signature dans la section signatures
+      sigData.A = record.signature_acheteur;
+      document.getElementById('sigImportedPreview').src = record.signature_acheteur;
+      document.getElementById('sigImportedBox').style.display = 'flex';
+      document.getElementById('statusA').innerHTML = '<i class="ti ti-circle-check" style="color:#0F6E56"></i> <span class="sig-ok">Signature reçue de l\'acheteur</span>';
+
+      // Dessiner sur le canvas
+      var canvas = document.getElementById('canvasA');
+      var ctx = canvas.getContext('2d');
+      var img = new Image();
+      img.onload = function(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);};
+      img.src = record.signature_acheteur;
+
+      resultDiv.innerHTML = '<span style="color:#0F6E56;font-weight:600"><i class="ti ti-circle-check"></i> ✅ Signature récupérée ! Signée le ' + (record.signed_at ? new Date(record.signed_at).toLocaleDateString('fr-FR') : '—') + '</span>';
+    } else {
+      resultDiv.innerHTML = '<span style="color:#C9A84C;font-weight:600">⏳ L\'acheteur n\'a pas encore signé. Réessayez plus tard.</span>';
+    }
+  } catch(e) {
+    resultDiv.innerHTML = '<span style="color:#c0392b">❌ Erreur : impossible de récupérer les données. Vérifiez l\'ID et votre connexion.</span>';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-download"></i> Récupérer la signature';
+}
+
+// ---- GÉNÉRATION HTML CONTRAT ----
+function buildHTML(forDownload) {
+  var vNom=v('v_nom'),vNaiss=v('v_naiss'),vAddr=v('v_addr');
+  var aNom=v('a_nom'),aNaiss=v('a_naiss'),aAddr=v('a_addr'),aPi=v('a_pi');
+  var bAddr=v('b_addr'),bTerrain=v('b_terrain'),bHab=v('b_hab'),bCh=v('b_chambres');
+  var bPieces=v('b_pieces').split('\n').filter(function(x){return x.trim();});
+  var pMontant=v('p_montant'),pLettres=v('p_lettres');
+  var dSig=fmtDate(v('d_signature')),dLieu=v('d_lieu'),dTransfert=fmtDate(v('d_transfert'));
+  var jVille=v('j_ville'),jFrais=v('j_frais'),jClauses=v('j_clauses');
+  var pieces=bCh?'<li>'+esc(bCh)+' chambre(s)</li>':'';
+  bPieces.forEach(function(p){pieces+='<li>'+esc(p)+'</li>';});
+  var sigV=sigData.V?'<img src="'+sigData.V+'" style="max-height:34px;max-width:200px">':'<div style="height:36px;border-bottom:1px solid #999"></div>';
+  var sigA=sigData.A?'<img src="'+sigData.A+'" style="max-height:34px;max-width:200px">':'<div style="height:36px;border-bottom:1px solid #999"></div>';
+  return '<div class="ch"><h1>CONTRAT DE VENTE</h1><p>D\'UNE MAISON D\'HABITATION</p></div>'+
+  '<div class="gr"></div>'+
+  '<p class="ab" style="margin:6px 0 10px"><strong>ENTRE LES SOUSSIGNÉS :</strong></p>'+
+  '<div class="pg">'+
+    '<div class="pb2"><strong>Le Vendeur</strong><p>Nom : '+dot(vNom)+'</p><p>Né(e) le : '+dot(vNaiss,25)+'</p><p>Adresse : '+dot(vAddr,25)+'</p></div>'+
+    '<div class="pb2"><strong>L\'Acheteur</strong><p>Nom : '+dot(aNom)+'</p><p>Né(e) le : '+dot(aNaiss,25)+'</p><p>Adresse : '+dot(aAddr,25)+'</p><p>Pièce d\'identité : '+dot(aPi,20)+'</p></div>'+
+  '</div>'+
+  '<p class="ab" style="font-style:italic;margin:6px 0 12px">Il a été convenu et arrêté ce qui suit :</p>'+
+  '<div class="at">Article 1 – Objet du contrat</div>'+
+  '<p class="ab">Le présent contrat a pour objet la vente d\'une maison à usage d\'habitation, appartenant au Vendeur, que l\'Acheteur accepte aux conditions ci-après définies.</p>'+
+  '<div class="at">Article 2 – Description du bien</div>'+
+  '<p class="ab">Adresse : '+dot(bAddr,30)+'<br>Terrain : '+dot(bTerrain?bTerrain+' m²':'',10)+'&nbsp;&nbsp;|&nbsp;&nbsp;Habitable : '+dot(bHab?bHab+' m²':'',10)+'</p>'+
+  '<p class="ab">Composition : <ul style="padding-left:16px;margin:4px 0">'+(pieces||'<li>(à compléter)</li>')+'</ul></p>'+
+  '<p class="ab">Le bien est vendu avec toutes ses dépendances, servitudes, droits et accessoires, sans exception ni réserve.</p>'+
+  '<div class="at">Article 3 – Prix de vente</div>'+
+  '<p class="ab">Prix de vente : '+dot(pMontant,20)+'<br>(en toutes lettres : '+dot(pLettres,35)+')</p>'+
+  '<div class="at">Article 4 – Modalités de paiement</div>'+
+  '<p class="ab">Le paiement sera effectué selon les modalités convenues entre les parties.</p>'+
+  '<div class="at">Article 5 – Transfert de propriété</div>'+
+  '<p class="ab">Date de transfert : '+dot(dTransfert,15)+'. L\'Acheteur prendra possession effective du bien et supportera toutes charges afférentes à compter de cette date.</p>'+
+  '<div class="at">Article 6 – État du bien</div>'+
+  '<p class="ab">Vendu en l\'état connu de l\'Acheteur. Garantie contre vice caché conformément à la loi.</p>'+
+  '<div class="at">Article 7 – Garanties & diagnostics</div>'+
+  '<p class="ab">Tous diagnostics obligatoires (DPE, amiante, plomb, termites, électricité, gaz…) sont annexés au présent contrat.</p>'+
+  '<div class="at">Article 8 – Conditions suspensives</div>'+
+  '<p class="ab">Absence de servitude d\'urbanisme.</p>'+
+  '<div class="at">Article 9 – Charges & taxes</div>'+
+  '<p class="ab">Répartition prorata temporis à compter du transfert de propriété.</p>'+
+  '<div class="at">Article 10 – Frais & honoraires</div>'+
+  '<p class="ab">À la charge de : <strong>'+esc(jFrais||"l'Acheteur")+'</strong></p>'+
+  '<div class="at">Article 11 – Élection de domicile & litiges</div>'+
+  '<p class="ab">Les parties font élection de domicile à leurs adresses respectives. Tout litige sera soumis à '+dot(jVille?'la juridiction de '+jVille:null,20)+'.</p>'+
+  (jClauses?'<div class="at">Clauses particulières</div><p class="ab">'+esc(jClauses)+'</p>':'')+
+  '<p class="ab" style="margin-top:16px">Fait à '+dot(dLieu,20)+', le '+dot(dSig,15)+'</p>'+
+  '<div class="sg">'+
+    '<div class="sb2"><p>Le Vendeur</p><small>'+esc(vNom||'...')+'</small><div class="sl">'+sigV+'</div><small style="font-size:9px;color:#666">Lu et approuvé</small></div>'+
+    '<div class="sb2"><p>L\'Acheteur</p><small>'+esc(aNom||'...')+'</small><div class="sl">'+sigA+'</div><small style="font-size:9px;color:#666">Lu et approuvé</small></div>'+
+  '</div>'+
+  '<div class="cf">Ce contrat constitue l\'accord complet entre les parties. Toute modification devra faire l\'objet d\'un avenant écrit signé des deux parties.</div>';
+}
+
+function openPreview(){document.getElementById('preview').innerHTML=buildHTML(false);document.getElementById('mo').classList.add('open');}
+function closePreview(){document.getElementById('mo').classList.remove('open');}
+
+function downloadImg(){
+  var hiddenDiv=document.createElement('div');
+  hiddenDiv.style.cssText='position:absolute;left:-9999px;top:0;width:800px;background:#fff;padding:40px;font-family:Georgia,serif;font-size:13px;line-height:1.75;color:#222';
+  hiddenDiv.className='ct';
+  var style=document.createElement('style');
+  style.textContent='.ch{background:#1B2A4A;padding:20px 24px;border-radius:7px 7px 0 0;text-align:center}.ch h1{color:#fff;font-size:18px;letter-spacing:.05em;margin-bottom:2px}.ch p{color:#C9A84C;font-size:11px;letter-spacing:.09em}.gr{height:2px;background:#C9A84C;margin:0 0 16px}.pg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.pb2{background:#f5f5f0;border:0.5px solid #ccc;border-radius:5px;padding:11px 13px;font-size:11.5px}.pb2 strong{display:block;color:#1B2A4A;font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}.at{font-size:10px;font-weight:bold;color:#1B2A4A;letter-spacing:.07em;text-transform:uppercase;margin:16px 0 4px;border-bottom:1px solid #C9A84C;padding-bottom:3px}.ab{font-size:11.5px;line-height:1.75;color:#333;margin:5px 0}.fd{color:#999;font-style:italic}.sg{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:22px}.sb2{text-align:center}.sb2 p{font-size:10px;font-weight:bold;color:#1B2A4A;margin-bottom:3px}.sl{border-bottom:1px solid #999;height:40px;margin:7px 0 4px}.sl img{max-height:38px}.cf{font-size:10px;color:#888;text-align:center;margin-top:16px;border-top:0.5px solid #ddd;padding-top:10px;font-style:italic}.bi{padding-left:14px;position:relative;margin:3px 0;font-size:11.5px}.bi::before{content:"•";position:absolute;left:0;color:#C9A84C}';
+  hiddenDiv.appendChild(style);
+  var content=document.createElement('div');
+  content.innerHTML=buildHTML(true);
+  hiddenDiv.appendChild(content);
+  document.body.appendChild(hiddenDiv);
+  if(typeof html2canvas!=='undefined'){
+    html2canvas(hiddenDiv,{scale:2,useCORS:true,backgroundColor:'#fff'}).then(function(canvas){
+      var a=document.createElement('a');a.download='Contrat_Vente_Maison.png';a.href=canvas.toDataURL('image/png');a.click();document.body.removeChild(hiddenDiv);
+    });
+  } else {
+    document.body.removeChild(hiddenDiv);
+    alert('Téléchargement: utilisez "Aperçu" puis faites une capture d\'écran.');
+  }
+}
+
+initCanvas('V');
+initCanvas('A');
+
+// Restaurer le dernier ID si disponible
+var savedId = localStorage.getItem('lastContractId');
+if(savedId){currentContractId=savedId;}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
